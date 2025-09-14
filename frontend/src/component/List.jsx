@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router"
 import '../style/List.css'
+import UpdateList from "./UpdateList"
+
 
 export default function List() {
 
@@ -18,7 +21,15 @@ export default function List() {
     }
 
 
-
+    const DeleteTask = async (id) => {
+        let result = await fetch(`http://localhost:3000/delete/${id}`, {
+            method: "Delete"
+        });
+        result = await result.json();
+        console.log(result);
+        getListData();
+    }
+   
     return <div>
         <h1 className="head">TODO LIST</h1>
 
@@ -30,18 +41,26 @@ export default function List() {
                     <th>SNo.</th>
                     <th>Title</th>
                     <th>Description</th>
+                    <th>Action</th>
                 </tr>
             </thead>
+            <tbody>
+                {taskData && taskData.map((item, index) => (
 
-            {taskData && taskData.map((item, index) => (
-                <>
+
                     <tr key={index}>
                         <td>{index + 1}</td>
                         <td>{item.title}</td>
                         <td>{item.desc}</td>
+                        <td><button onClick={() => DeleteTask(item._id)}>Delete</button>
+                            <Link to={`/UpdateList/${item._id}`}><button>
+                                Update </button></Link>
+                        </td>
                     </tr>
-                </>
-            ))}
+
+
+                ))}
+            </tbody>
         </table>
 
     </div>
